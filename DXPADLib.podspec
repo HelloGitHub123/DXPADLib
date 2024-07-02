@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.name         = "DXPADLib"
-  spec.version      = "1.0.0"
+  spec.version      = "1.0.1"
   spec.summary      = "DXP AD Manager"
 
   # This description is used to generate tags and improve search results.
@@ -78,7 +78,7 @@ Pod::Spec.new do |spec|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  spec.source       = { :git => "https://github.com/HelloGitHub123/DXPADLib.git", :tag => "1.0.0" }
+  spec.source       = { :git => "https://github.com/HelloGitHub123/DXPADLib.git", :tag => "1.0.1" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -89,7 +89,7 @@ Pod::Spec.new do |spec|
   #  Not including the public_header_files will make all headers public.
   #
 
-  spec.source_files  = "DXPToolsLib/**/*.{h,m}"
+  spec.source_files  = "DXPADLib/**/*.{h,m}"
   # spec.exclude_files = "Classes/Exclude"
 
   # spec.public_header_files = "Classes/**/*.h"

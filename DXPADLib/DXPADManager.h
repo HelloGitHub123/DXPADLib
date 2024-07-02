@@ -38,6 +38,9 @@ NS_ASSUME_NONNULL_BEGIN
 // 清除
 - (void)clearAd;
 
+// 获取广告配置接口
+- (void)fetchADConfig:(void(^)(bool success))callback;
+
 @end
 
 NS_ASSUME_NONNULL_END
