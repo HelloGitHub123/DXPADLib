@@ -62,6 +62,7 @@
 			make.size.mas_equalTo(CGSizeMake(SCREEN_WIDTH_ad - 84, (SCREEN_WIDTH_ad - 84) / imgSize.width * imgSize.height));
 		}];
 	}];
+	
 }
 
 - (void)showWithADArr:(NSArray *)adList {
@@ -73,7 +74,7 @@
     DCAdPic *adPic = [self.adDetail.adPicList firstObject];
 	
 	if (self.clickBlock) {
-		self.clickBlock();
+		self.clickBlock(adPic);
 	}
 	
     self.adDetail.showing = NO;
@@ -83,6 +84,9 @@
 - (void)closeView {
     self.adDetail.showing = NO;
     [self removeFromSuperview];
+	if (self.closeBlock) {
+		self.closeBlock();
+	}
 }
 
 

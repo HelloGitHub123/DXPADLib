@@ -58,7 +58,6 @@
     
     DCAdPic *adPic = [self.adDetail.adPicList firstObject];
     [self.floatImgView sd_setImageWithURL:[NSURL URLWithString:adPic.adImg]];
-    
 }
 
 // MARK: 事件
@@ -66,7 +65,7 @@
     DCAdPic *adPic = [self.adDetail.adPicList firstObject];
 //    [DXPADManager adJumpWithPic:adPic];
 	if (self.clickBlock) {
-		self.clickBlock();
+		self.clickBlock(adPic);
 	}
     self.adDetail.showing = NO;
 }
@@ -74,6 +73,9 @@
 - (void)closeView {
     self.adDetail.showing = NO;
     [self removeFromSuperview];
+	if (self.closeBlock) {
+		self.closeBlock();
+	}
 }
 
 

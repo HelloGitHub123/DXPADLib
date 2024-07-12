@@ -15,8 +15,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) UIImageView *screenImg;
 @property (nonatomic, strong) UIImageView *adImgView;
 @property (nonatomic, assign) BOOL splashAdShowing; // 正在展示
+@property (nonatomic, copy) void (^onAdsShowBlock)(DCAdPic *adPic); // 广告显示
 @property (nonatomic, copy) void (^clickBlock)(DCAdPic *adPic); // 广告点击事件
 @property (nonatomic, copy) void (^closeBlock)(NSString *str); // 关闭
+@property (nonatomic, copy) void (^clickSkipBlock)(void); // 关闭
+
 
 // 展示开屏广告
 - (void)showSplashAD:(DCAdDetail*)splashAdDetail adpic:(DCAdPic*)adPic;

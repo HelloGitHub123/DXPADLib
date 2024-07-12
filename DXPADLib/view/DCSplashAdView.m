@@ -56,6 +56,11 @@
 - (void)showSplashAD:(DCAdDetail*)splashAdDetail adpic:(DCAdPic*)adPic {
 	
 	if (splashAdDetail && adPic) {
+		// 广告显示回调
+		if (self.onAdsShowBlock) {
+			self.onAdsShowBlock(adPic);
+		}
+		
 		self.adPic = adPic;
 		self.splashAdDetail = splashAdDetail;
 		// 开启定时器
@@ -90,7 +95,7 @@
     CGPoint panPoint = [tap locationInView:self.timeLbl];
     BOOL tapSkip = CGRectContainsPoint(self.timeLbl.bounds, panPoint);
     if (tapSkip) { // 跳过广告
-        [self closeView];
+        [self onSkipClick];
         return;
     }
 	// 点击处理回调
@@ -99,6 +104,13 @@
 	}
 	
     [self closeView];
+}
+
+// skip被点击
+- (void)onSkipClick {
+	if (self.clickSkipBlock) {
+		self.clickSkipBlock();
+	}
 }
 
 - (void)closeView {

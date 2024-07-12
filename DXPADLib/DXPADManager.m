@@ -13,6 +13,7 @@
 #import "DCAlertAdView.h"
 #import <DXPNetWorkingManagerLib/DCNetAPIClient.h>
 #import "DXPADHeader.h"
+#import "BaseWebViewController.h"
 
 // 记录展示次数
 static  NSString * DXP_AD_DATA_SHOW_TIMES = @"DXP_AD_DATA_SHOW_TIMES";
@@ -52,6 +53,8 @@ static DXPADManager *manager = nil;
 @property (nonatomic,strong) NSMutableArray *showViews;
 // 默认的启动图
 @property (nonatomic, strong) UIImage *defaultLaunchImg;
+// 是否支持内置webview 默认不支持
+@property (nonatomic, assign) BOOL isInnerWebview;
 @end
 
 
@@ -106,6 +109,7 @@ static DXPADManager *manager = nil;
 
 - (instancetype)init {
 	if ( self = [super init]) {
+		self.isInnerWebview = false;
 	}
 	return self;
 }
@@ -137,8 +141,8 @@ static DXPADManager *manager = nil;
 
 - (void)removeLun {
 	[self.splashAdView removeFromSuperview];
-	if (self.closeBlock) {
-		self.closeBlock();
+	if (self.onAdsFinish) {
+		self.onAdsFinish();
 	}
 }
 
@@ -210,11 +214,8 @@ static DXPADManager *manager = nil;
 }
 
 // 指定ViewController进行展示
-- (void)showAdWith:(UIViewController*)vc {
-	NSString *clsName = NSStringFromClass(vc.class);
-	NSLog(@"------- %@",clsName);
-	// 遍历 弹窗广告和浮窗广告
-	if (isEmptyString_ad(clsName)) {
+- (void)showAdWith:(NSString *)pageUrl {
+	if (isEmptyString_ad(pageUrl)) {
 		return;
 	}
 	
@@ -244,26 +245,48 @@ static DXPADManager *manager = nil;
 	// 悬浮广告
 	[self.floatingAdArr enumerateObjectsUsingBlock:^(DCAdDetail *obj, NSUInteger idx, BOOL * _Nonnull stop) {
 		if (!isEmptyString_ad(obj.clsName)
-			&& [clsName isEqualToString:obj.clsName]
+			&& [pageUrl isEqualToString:obj.clsName]
 			&& canShow(obj)
-			&& ![self checkADViewShowed:vc andTag:HJFloatViewTag]
+			&& ![self checkADViewShowed:[self topViewController] andTag:HJFloatViewTag]
 			&& !IsArrEmpty_ad(obj.adPicList) ) {
 			
 			// 设置缓存
 			[self updateShowTimesCache:obj];
 		 
 			DCFloatingAdView *floatView = [[DCFloatingAdView alloc]initWith:obj];
-			floatView.clickBlock = ^{
-				if (self.floatViewClickBlock) {
-					self.floatViewClickBlock();
+			__weak __typeof(&*self)weakSelf = self;
+			floatView.clickBlock = ^(DCAdPic * _Nonnull adPic) {
+				if ([adPic.schemaType isEqualToString:@"8"] && self.isInnerWebview) {
+					// 使用内置webview 打开
+					if (isEmptyString_ad(adPic.adAppUrl)) {
+						return;
+					}
+					BaseWebViewController *VC = [[BaseWebViewController alloc] init];
+					VC.hidesBottomBarWhenPushed = YES;
+					VC.loadUrl = adPic.adAppUrl;
+					if ([weakSelf topViewController]) {
+						[[weakSelf topViewController].navigationController pushViewController:VC animated:YES];
+					}
+				} else {
+					if (weakSelf.floatViewClickBlock) {
+						weakSelf.floatViewClickBlock(adPic);
+					}
+				}
+			};
+			floatView.closeBlock = ^{
+				if (self.floatViewCloseBlock) {
+					self.floatViewCloseBlock();
 				}
 			};
 			floatView.tag = HJFloatViewTag;
-			[vc.view addSubview:floatView];
+			[[self topViewController].view addSubview:floatView];
 			[self.showViews addObject:floatView];
 			//展示宣传广告
 			dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-				[vc.view bringSubviewToFront:floatView];
+				[[self topViewController].view bringSubviewToFront:floatView];
+				if (self.floatViewShowBlock) {
+					self.floatViewShowBlock();
+				}
 			});
 			*stop = YES;
 		}
@@ -272,31 +295,143 @@ static DXPADManager *manager = nil;
 	// 弹窗广告
 	[self.alertAdArr enumerateObjectsUsingBlock:^(DCAdDetail *obj, NSUInteger idx, BOOL * _Nonnull stop) {
 		if (!isEmptyString_ad(obj.clsName)
-			&& [clsName isEqualToString:obj.clsName]
+			&& [pageUrl isEqualToString:obj.clsName]
 			&& canShow(obj)
-			&& ![self checkADViewShowed:vc andTag:HJAlertADTag]
+			&& ![self checkADViewShowed:[self topViewController] andTag:HJAlertADTag]
 			&& !IsArrEmpty_ad(obj.adPicList) ) {
 			
 			//展示宣传广告
 			[self updateShowTimesCache:obj];
 			DCAlertAdView *alertView = [[DCAlertAdView alloc]initWith:obj];
-			alertView.clickBlock = ^{
-				if (self.alertViewClickBlock) {
-					self.alertViewClickBlock();
+			__weak __typeof(&*self)weakSelf = self;
+			alertView.clickBlock = ^(DCAdPic * _Nonnull adPic) {
+				if ([adPic.schemaType isEqualToString:@"8"] && self.isInnerWebview) {
+					// 使用内置webview 打开
+					if (isEmptyString_ad(adPic.adAppUrl)) {
+						return;
+					}
+					BaseWebViewController *VC = [[BaseWebViewController alloc] init];
+					VC.hidesBottomBarWhenPushed = YES;
+					VC.loadUrl = adPic.adAppUrl;
+					if ([weakSelf topViewController]) {
+						[[weakSelf topViewController].navigationController pushViewController:VC animated:YES];
+					}
+				} else {
+					if (weakSelf.alertViewClickBlock) {
+						weakSelf.alertViewClickBlock(adPic);
+					}
 				}
 			};
-			
+			alertView.closeBlock = ^{
+				if (weakSelf.alertViewCloseBlock) {
+					weakSelf.alertViewCloseBlock();
+				}
+			};
 			alertView.tag = HJAlertADTag;
-			[vc.view addSubview:alertView];
+			[[self topViewController].view addSubview:alertView];
 			[self.showViews addObject:alertView];
 			dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-				[vc.view bringSubviewToFront:alertView];
+				[[self topViewController].view bringSubviewToFront:alertView];
+				// 显示回调
+				if (self.alertViewShowBlock) {
+					self.alertViewShowBlock();
+				}
 			});
 			obj.showing = YES;
 			*stop = YES;
 		}
 	}];
+	
 }
+
+// 指定ViewController进行展示
+//- (void)showAdWith:(UIViewController*)vc {
+//	NSString *clsName = NSStringFromClass(vc.class);
+//	NSLog(@"------- %@",clsName);
+//	// 遍历 弹窗广告和浮窗广告
+//	if (isEmptyString_ad(clsName)) {
+//		return;
+//	}
+//	
+//	bool(^canShow)(DCAdDetail *) = ^(DCAdDetail *obj) {
+//		if ([@"1" isEqualToString:obj.extData.ruleType] ) {
+//			return YES;
+//		}
+//	 
+//		NSString *userKey = isEmptyString_ad(self.userKey) ? @"nouser" : self.userKey;
+//		NSDictionary *dataDic = self.adShowCacheDIc[@"data"]?:@{};
+//		NSDictionary *userDic = [dataDic objectForKey:userKey]?:@{};
+//		
+//		NSInteger times = [[userDic objectForKey:obj.adId] integerValue];
+//		
+//		if ([@"2" isEqualToString:obj.extData.ruleType] && times < 1 ) { // 只展示一次
+//			return YES;
+//		}
+//		
+//		if ([@"3" isEqualToString:obj.extData.ruleType] && times < obj.extData.ruleValue  ) { // 一天只展示多少次
+//			return YES;
+//		}
+//		
+//		return NO;
+//	};
+//	
+//	
+//	// 悬浮广告
+//	[self.floatingAdArr enumerateObjectsUsingBlock:^(DCAdDetail *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+//		if (!isEmptyString_ad(obj.clsName)
+//			&& [clsName isEqualToString:obj.clsName]
+//			&& canShow(obj)
+//			&& ![self checkADViewShowed:vc andTag:HJFloatViewTag]
+//			&& !IsArrEmpty_ad(obj.adPicList) ) {
+//			
+//			// 设置缓存
+//			[self updateShowTimesCache:obj];
+//		 
+//			DCFloatingAdView *floatView = [[DCFloatingAdView alloc]initWith:obj];
+//			floatView.clickBlock = ^{
+//				if (self.floatViewClickBlock) {
+//					self.floatViewClickBlock();
+//				}
+//			};
+//			floatView.tag = HJFloatViewTag;
+//			[vc.view addSubview:floatView];
+//			[self.showViews addObject:floatView];
+//			//展示宣传广告
+//			dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//				[vc.view bringSubviewToFront:floatView];
+//			});
+//			*stop = YES;
+//		}
+//	}];
+//	
+//	// 弹窗广告
+//	[self.alertAdArr enumerateObjectsUsingBlock:^(DCAdDetail *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+//		if (!isEmptyString_ad(obj.clsName)
+//			&& [clsName isEqualToString:obj.clsName]
+//			&& canShow(obj)
+//			&& ![self checkADViewShowed:vc andTag:HJAlertADTag]
+//			&& !IsArrEmpty_ad(obj.adPicList) ) {
+//			
+//			//展示宣传广告
+//			[self updateShowTimesCache:obj];
+//			DCAlertAdView *alertView = [[DCAlertAdView alloc]initWith:obj];
+//			alertView.clickBlock = ^{
+//				if (self.alertViewClickBlock) {
+//					self.alertViewClickBlock();
+//				}
+//			};
+//			
+//			alertView.tag = HJAlertADTag;
+//			[vc.view addSubview:alertView];
+//			[self.showViews addObject:alertView];
+//			dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//				[vc.view bringSubviewToFront:alertView];
+//			});
+//			obj.showing = YES;
+//			*stop = YES;
+//		}
+//	}];
+//}
 
 // 判断广告是否已经展示
 - (BOOL)checkADViewShowed:(UIViewController*)vc andTag:(NSInteger)viewTag {
@@ -362,10 +497,14 @@ static DXPADManager *manager = nil;
 	[self.floatingAdArr removeAllObjects];
 	
 	[self.mktAdList enumerateObjectsUsingBlock:^(DCAdDetail * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-		NSString *cls = [self.adPageUrlDic objectForKey:obj.pageUrl] ?:@""; // 根据pageURL找对应的页面ClassName
-		if (!isEmptyString_ad(cls)) {
-			obj.clsName = cls; // 保存对应的clasName
-		}
+//		NSString *cls = [self.adPageUrlDic objectForKey:obj.pageUrl] ?:@""; // 根据pageURL找对应的页面ClassName
+//		if (!isEmptyString_ad(cls)) {
+//			obj.clsName = cls; // 保存对应的clasName
+//		}
+		
+		// 保存路由到对象
+		obj.clsName = obj.pageUrl;
+		
 		if ([@"1" isEqualToString:obj.adType]) { // 开屏广告
 			NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 			if (isEmptyString_ad(self.adID)) {
@@ -432,19 +571,50 @@ static DXPADManager *manager = nil;
 		__weak __typeof(&*self)weakSelf = self;
 		_splashAdView.clickBlock = ^(DCAdPic * _Nonnull adPic) {
 			// 点击回调
-			if (weakSelf.clickBlock) {
-				weakSelf.clickBlock();
+			if (weakSelf.onAdsClick) {
+				//如果 schemaType 为 2,3,4 类型 且 设置了 使用内置 Web跳转处理  此事件 内部消耗 不再 抛出
+				//如果 schemaType 为8 类型 且 设置了 使用内置 Web跳转处理  并且APP 依赖了  此事件 内部消耗 不再 抛出
+				if ([adPic.schemaType isEqualToString:@"8"] && self.isInnerWebview) {
+					// 使用内置webview 打开
+					if (isEmptyString_ad(adPic.adAppUrl)) {
+						return;
+					}
+					BaseWebViewController *VC = [[BaseWebViewController alloc] init];
+					VC.hidesBottomBarWhenPushed = YES;
+					VC.loadUrl = adPic.adAppUrl;
+					if ([weakSelf topViewController]) {
+						[[weakSelf topViewController].navigationController pushViewController:VC animated:YES];
+					}
+				} else {
+					weakSelf.onAdsClick(adPic);
+				}
 			}
 		};
 		_splashAdView.closeBlock = ^(NSString * _Nonnull str) {
 			// 关闭回调
-			if (weakSelf.closeBlock) {
-				weakSelf.closeBlock();
+			if (weakSelf.onAdsFinish) {
+				weakSelf.onAdsFinish();
 			}
 		};
-		
+		_splashAdView.clickSkipBlock = ^{
+			// skip 被点击回调
+			if (weakSelf.onSkipClickBlock) {
+				weakSelf.onSkipClickBlock();
+			}
+		};
+		_splashAdView.onAdsShowBlock = ^(DCAdPic * _Nonnull adPic) {
+			// 广告显示回调
+			if (weakSelf.onAdsShowBlock) {
+				weakSelf.onAdsShowBlock(adPic);
+			}
+		};
 	}
 	return _splashAdView;
+}
+
+// 是否支持内置webview
+- (void)setUseDefaultWebView:(BOOL)flag {
+	_isInnerWebview = flag;
 }
 
 
@@ -482,6 +652,32 @@ static DXPADManager *manager = nil;
 		_adShowCacheDIc = [NSMutableDictionary new];
 	}
 	return _adShowCacheDIc;
+}
+
+#pragma mark -- 获取当前栈顶控制器
+- (UIViewController *)topViewController {
+	UIViewController *resultVC;
+	resultVC = [self _topViewController:[[self keyWindow] rootViewController]];
+	while (resultVC.presentedViewController) {
+		resultVC = [self _topViewController:resultVC.presentedViewController];
+	}
+	return resultVC;
+}
+
+- (UIViewController *)_topViewController:(UIViewController *)vc {
+	if ([vc isKindOfClass:[UINavigationController class]]) {
+		return [self _topViewController:[(UINavigationController *)vc topViewController]];
+	} else if ([vc isKindOfClass:[UITabBarController class]]) {
+		return [self _topViewController:[(UITabBarController *)vc selectedViewController]];
+	} else {
+		return vc;
+	}
+	return nil;
+}
+
+// 获取当前window
+- (UIWindow *)keyWindow {
+	return [UIApplication sharedApplication].keyWindow;
 }
 
 @end
