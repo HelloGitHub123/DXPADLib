@@ -1,5 +1,5 @@
 //
-//  HJ_JSHandler.h
+//  HJ_ADJSHandler.h
 //
 //
 //  DITOApp
@@ -7,8 +7,8 @@
 //  Created by mac on 2021/6/22.
 
 #import <Foundation/Foundation.h>
-#import "HJWKWebViewHandler.h"
-#import "BaseWebViewController.h"
+#import "HJADWKWebViewHandler.h"
+#import "ADBaseWebViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -37,11 +37,11 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 
-@interface HJ_JSHandler : NSObject<ZXXE_JavaScriptExport>
+@interface HJ_ADJSHandler : NSObject<ZXXE_JavaScriptExport>
 
-@property (nonatomic, weak) BaseWebViewController *webViewController;
+@property (nonatomic, weak) ADBaseWebViewController *webViewController;
 
-- (instancetype)initWithViewController:(BaseWebViewController *)webViewController;
+- (instancetype)initWithViewController:(ADBaseWebViewController *)webViewController;
 
 @end
 

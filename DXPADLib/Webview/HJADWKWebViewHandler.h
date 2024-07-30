@@ -1,6 +1,6 @@
 //
-//  HJWKWebViewHandler.h
-//  
+//  HJADWKWebViewHandler.h
+//
 //
 //  DITOApp
 //
@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 
-@interface HJWKWebViewHandler : NSObject
+@interface HJADWKWebViewHandler : NSObject
 
 @property (nonatomic, readonly) id jsExport;
 

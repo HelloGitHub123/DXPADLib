@@ -13,7 +13,7 @@
 #import "DCAlertAdView.h"
 #import <DXPNetWorkingManagerLib/DCNetAPIClient.h>
 #import "DXPADHeader.h"
-#import "BaseWebViewController.h"
+#import "ADBaseWebViewController.h"
 
 // 记录展示次数
 static  NSString * DXP_AD_DATA_SHOW_TIMES = @"DXP_AD_DATA_SHOW_TIMES";
@@ -261,7 +261,7 @@ static DXPADManager *manager = nil;
 					if (isEmptyString_ad(adPic.adAppUrl)) {
 						return;
 					}
-					BaseWebViewController *VC = [[BaseWebViewController alloc] init];
+					ADBaseWebViewController *VC = [[ADBaseWebViewController alloc] init];
 					VC.hidesBottomBarWhenPushed = YES;
 					VC.loadUrl = adPic.adAppUrl;
 					if ([weakSelf topViewController]) {
@@ -310,7 +310,7 @@ static DXPADManager *manager = nil;
 					if (isEmptyString_ad(adPic.adAppUrl)) {
 						return;
 					}
-					BaseWebViewController *VC = [[BaseWebViewController alloc] init];
+					ADBaseWebViewController *VC = [[ADBaseWebViewController alloc] init];
 					VC.hidesBottomBarWhenPushed = YES;
 					VC.loadUrl = adPic.adAppUrl;
 					if ([weakSelf topViewController]) {
@@ -579,7 +579,7 @@ static DXPADManager *manager = nil;
 					if (isEmptyString_ad(adPic.adAppUrl)) {
 						return;
 					}
-					BaseWebViewController *VC = [[BaseWebViewController alloc] init];
+					ADBaseWebViewController *VC = [[ADBaseWebViewController alloc] init];
 					VC.hidesBottomBarWhenPushed = YES;
 					VC.loadUrl = adPic.adAppUrl;
 					if ([weakSelf topViewController]) {

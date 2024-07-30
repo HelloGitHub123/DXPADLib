@@ -1,13 +1,13 @@
 //
-//  HJ_JSHandler.m
+//  HJ_ADJSHandler.m
 //
 //
 //  DITOApp
 //
 //  Created by mac on 2021/6/22.
 
-#import "HJ_JSHandler.h"
-#import "HJHandelJson.h"
+#import "HJ_ADJSHandler.h"
+#import "HJADHandelJson.h"
 #import <CoreLocation/CoreLocation.h>
 #import <AVFoundation/AVFoundation.h>
 #import <MessageUI/MessageUI.h>
@@ -41,8 +41,8 @@ typedef enum {
 #define IsArrEmpty(_ref)    (((_ref) == nil) || ([(_ref) isEqual:[NSNull null]]) ||([(_ref) count] == 0))
 
 
-@interface HJ_JSHandler ()<UIImagePickerControllerDelegate,UIActionSheetDelegate,UIDocumentPickerDelegate, UIDocumentInteractionControllerDelegate,CLLocationManagerDelegate,MFMailComposeViewControllerDelegate,QLPreviewControllerDataSource, QLPreviewControllerDelegate>
-//@property (nonatomic, weak) BaseWebViewController *webViewController;
+@interface HJ_ADJSHandler ()<UIImagePickerControllerDelegate,UIActionSheetDelegate,UIDocumentPickerDelegate, UIDocumentInteractionControllerDelegate,CLLocationManagerDelegate,MFMailComposeViewControllerDelegate,QLPreviewControllerDataSource, QLPreviewControllerDelegate>
+//@property (nonatomic, weak) ADBaseWebViewController *webViewController;
 // openAppUrl
 @property (nonatomic, assign) SchemeType schemeType;
 @property (nonatomic, assign) OpenMode openMode;
@@ -52,9 +52,9 @@ typedef enum {
 @property (nonatomic, strong) CLLocation *myLocation;
 @end
 
-@implementation HJ_JSHandler
+@implementation HJ_ADJSHandler
 
-- (instancetype)initWithViewController:(BaseWebViewController *)webViewController{
+- (instancetype)initWithViewController:(ADBaseWebViewController *)webViewController{
     if (self = [super init]) {
         _webViewController = webViewController;
     }
@@ -154,7 +154,7 @@ typedef enum {
 
 #pragma mark -- 调用原生分享功能进行第三方社媒分享
 - (void)shareBySystem:(NSString *)url {
-    NSDictionary *parmasDic = [HJHandelJson dictionaryWithJsonString:url];
+    NSDictionary *parmasDic = [HJADHandelJson dictionaryWithJsonString:url];
     if ([parmasDic allKeys] == 0) {
         return;
     }
@@ -199,7 +199,7 @@ typedef enum {
 
 #pragma mark -- 保存图片到相册
 - (void)saveImageToGallery:(NSString *)params {
-    NSDictionary *parmasDic = [HJHandelJson dictionaryWithJsonString:params];
+    NSDictionary *parmasDic = [HJADHandelJson dictionaryWithJsonString:params];
     if ([parmasDic allKeys] == 0) {
         return;
     }
@@ -231,7 +231,7 @@ typedef enum {
 
 #pragma mark -- 发邮件
 - (void)sendMail:(NSString *)paramsStr {
-    NSDictionary *parmasDic = [HJHandelJson dictionaryWithJsonString:paramsStr];
+    NSDictionary *parmasDic = [HJADHandelJson dictionaryWithJsonString:paramsStr];
     if ([parmasDic allKeys] == 0) {
         return;
     }
@@ -292,7 +292,7 @@ typedef enum {
 
 #pragma mark -- 设置手机 状态栏颜色
 - (void)changeStatusBarColor:(NSString *)paramsStr {
-    NSDictionary *parmasDic = [HJHandelJson dictionaryWithJsonString:paramsStr];
+    NSDictionary *parmasDic = [HJADHandelJson dictionaryWithJsonString:paramsStr];
     if ([parmasDic allKeys] == 0) {
         return;
     }

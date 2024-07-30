@@ -1,16 +1,16 @@
 //
-//  HJWKWebViewHandler.m
+//  HJADWKWebViewHandler.m
 //
 //
 //  DITOApp
 //
 //  Created by mac on 2021/6/22.
 
-#import "HJWKWebViewHandler.h"
+#import "HJADWKWebViewHandler.h"
 #import <objc/runtime.h>
-#import "HJ_JSHandler.h"
+#import "HJ_ADJSHandler.h"
 
-@interface HJWKWebViewHandler () <WKScriptMessageHandler>
+@interface HJADWKWebViewHandler () <WKScriptMessageHandler>
 @property (nonatomic, strong) id jsExport;
 @property (nonatomic, strong) WKUserContentController *userContent;
 
@@ -19,7 +19,7 @@
 @property (nonatomic, copy) NSString *bindName;
 @property (nonatomic, strong) NSMutableString *jsHandler;
 @end
-@implementation HJWKWebViewHandler
+@implementation HJADWKWebViewHandler
 
 - (instancetype)initWithUserContent:(WKUserContentController *)userContent{
     if (self = [super init]) {
@@ -79,11 +79,11 @@
     unsigned int protocalCount;
     self.jsHandler = [[NSMutableString alloc] initWithFormat:@"var %@ = {",self.bindName];
 
-    if(![[NSString stringWithUTF8String:class_getName([self.jsExport class])] isEqualToString:@"HJ_JSHandler"])
+    if(![[NSString stringWithUTF8String:class_getName([self.jsExport class])] isEqualToString:@"HJ_ADJSHandler"])
     {
         id parent =  self.parentJsExport;
         //获取父类协议列表
-        __unsafe_unretained Protocol **protocolList = class_copyProtocolList([HJ_JSHandler class], &protocalCount);
+        __unsafe_unretained Protocol **protocolList = class_copyProtocolList([HJ_ADJSHandler class], &protocalCount);
         Protocol *jsExport;
         for (unsigned int i = 0; i< protocalCount; i++) {
             Protocol *myProtocal = protocolList[i];
@@ -162,7 +162,7 @@
 - (id)parentJsExport
 {
     if(!_parentJsExport){
-        _parentJsExport = [[HJ_JSHandler alloc]initWithViewController:((HJ_JSHandler*)self.jsExport).webViewController];
+        _parentJsExport = [[HJ_ADJSHandler alloc]initWithViewController:((HJ_ADJSHandler*)self.jsExport).webViewController];
     }
     return _parentJsExport;
 

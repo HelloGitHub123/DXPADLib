@@ -1,22 +1,22 @@
 //
-//  WKWebView+JSHandler.m
-//  
+//  WKWebView+JSHandler_AD.m
+//
 //
 //  DITOApp
 //
 //  Created by mac on 2021/6/22.
 
-#import "WKWebView+JSHandler.h"
+#import "WKWebView+JSHandler_AD.h"
 
 #import <objc/runtime.h>
 
 
-@implementation WKWebView (JSHandler)
+@implementation WKWebView (JSHandler_AD)
 
-- (HJWKWebViewHandler *)hj_jsHandler{
+- (HJADWKWebViewHandler *)hj_jsHandler{
     return objc_getAssociatedObject(self, @selector(hj_jsHandler));
 }
-- (void)setHj_jsHandler:(HJWKWebViewHandler *)hz_jsHandler{
+- (void)setHj_jsHandler:(HJADWKWebViewHandler *)hz_jsHandler{
     objc_setAssociatedObject(self, @selector(hj_jsHandler), hz_jsHandler, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 

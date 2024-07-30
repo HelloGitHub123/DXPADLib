@@ -1,14 +1,14 @@
 //
-//  UINavigationController+MP_.m
+//  UINavigationController+MP_AD.m
 //  mPaas_Poc_Demo
 //
 //  Created by wyy on 2022/7/19.
 //
 
-#import "UINavigationController+MP_.h"
+#import "UINavigationController+MP_AD.h"
 #import <objc/runtime.h>
 
-@implementation UINavigationController (MP_)
+@implementation UINavigationController (MP_AD)
 
 + (void)load
 {

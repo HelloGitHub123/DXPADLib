@@ -1,5 +1,5 @@
 //
-//  HJHandelJson.h
+//  HJADHandelJson.h
 //  youcaoping
 //
 //  Created by 在野 on 2018/11/29.
@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface HJHandelJson : NSObject
+@interface HJADHandelJson : NSObject
 //json转字典
 + (NSDictionary *)dictionaryWithJsonString:(NSString *)jsonString;
 //字典转json

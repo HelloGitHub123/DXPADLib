@@ -1,5 +1,5 @@
 //
-//  BaseWebViewController.h
+//  ADBaseWebViewController.h
 //  BOL
 //
 //  Created by 李标 on 2023/1/6.
@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface BaseWebViewController : UIViewController
+@interface ADBaseWebViewController : UIViewController
 
 @property (nonatomic, strong) WKWebView *wkWebview;
 @property (nonatomic, strong) NSString *loadUrl; //h5加载

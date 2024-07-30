@@ -1,20 +1,20 @@
 //
-//  BaseWebViewController.m
+//  ADBaseWebViewController.m
 //  BOL
 //
 //  Created by 李标 on 2023/1/6.
 //
 
-#import "BaseWebViewController.h"
-#import "HJHandelJson.h"
-#import "HJ_JSHandler.h"
-#import "HJWKWebViewHandler.h"
-#import "WKWebView+JSHandler.h"
+#import "ADBaseWebViewController.h"
+#import "HJADHandelJson.h"
+#import "HJ_ADJSHandler.h"
+#import "HJADWKWebViewHandler.h"
+#import "WKWebView+JSHandler_AD.h"
 #import <DXPToolsLib/HJMBProgressHUD+Category.h>
 #import <Masonry/Masonry.h>
 #import <DXPNetWorkingManagerLib/DCNetAPIClient.h>
 #import <DXPToolsLib/SNAlertMessage.h>
-#import "UINavigationController+MP_.h"
+#import "UINavigationController+MP_AD.h"
 
 #define LoginSuccess_BaseWebView_Notification    @"LoginSuccess_BaseWebView_Notification"
 #define LogOut_BaseWebView_Notification    @"LogOut_BaseWebView_Notification"
@@ -42,14 +42,14 @@
 #define IsNilOrNull(_ref)        (((_ref) == nil) || ([(_ref) isEqual:[NSNull null]]))
 #define IsArrEmpty(_ref)    (((_ref) == nil) || ([(_ref) isEqual:[NSNull null]]) ||([(_ref) count] == 0))
 
-@interface BaseWebViewController () <WKUIDelegate, WKNavigationDelegate, WKScriptMessageHandler, UINavigationControllerDelegate>
+@interface ADBaseWebViewController () <WKUIDelegate, WKNavigationDelegate, WKScriptMessageHandler, UINavigationControllerDelegate>
 
 @property (nonatomic, strong) NSString *url_temp; //中间存储url,下拉刷新用到
 @property (nonatomic, strong) NSTimer *adTimer;
 
 @end
 
-@implementation BaseWebViewController
+@implementation ADBaseWebViewController
 
 - (void)dealloc {
 	NSLog(@"dealloc");
@@ -336,8 +336,8 @@
 
 #pragma mark - 其他方法
 - (void)setjsHandler:(WKUserContentController *)userContent {
-	HJWKWebViewHandler *handler = [[HJWKWebViewHandler alloc] initWithUserContent:userContent];
-	[handler configureWithJSExport:[[HJ_JSHandler alloc] initWithViewController:self] bindName: @"clp"];
+	HJADWKWebViewHandler *handler = [[HJADWKWebViewHandler alloc] initWithUserContent:userContent];
+	[handler configureWithJSExport:[[HJ_ADJSHandler alloc] initWithViewController:self] bindName: @"clp"];
 	_wkWebview.hj_jsHandler = handler;
 }
 

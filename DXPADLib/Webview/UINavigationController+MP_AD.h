@@ -1,5 +1,5 @@
 //
-//  UINavigationController+MP_.h
+//  UINavigationController+MP_AD.h
 //  mPaas_Poc_Demo
 //
 //  Created by wyy on 2022/7/19.
@@ -9,7 +9,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface UINavigationController (MP_)
+@interface UINavigationController (MP_AD)
 
 @property (nonatomic,weak) id<UINavigationControllerDelegate> mp_delegate;
 

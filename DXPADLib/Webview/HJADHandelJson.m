@@ -1,14 +1,14 @@
 //
-//  HJHandelJson.m
+//  HJADHandelJson.m
 //  youcaoping
 //
 //  Created by 在野 on 2018/11/29.
 //  Copyright © 2018年 Leo. All rights reserved.
 //
 
-#import "HJHandelJson.h"
+#import "HJADHandelJson.h"
 
-@implementation HJHandelJson
+@implementation HJADHandelJson
 + (NSDictionary *)dictionaryWithJsonString:(NSString *)jsonString
 {
     if (jsonString == nil) {
