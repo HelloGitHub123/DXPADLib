@@ -144,6 +144,10 @@ static DXPADManager *manager = nil;
 	if (self.onAdsFinish) {
 		self.onAdsFinish();
 	}
+	// 移除视图上的所有手势识别器
+	[[UIApplication sharedApplication].keyWindow .gestureRecognizers enumerateObjectsUsingBlock:^(UIGestureRecognizer * _Nonnull gestureRecognizer, NSUInteger idx, BOOL *stop) {
+		[[UIApplication sharedApplication].keyWindow removeGestureRecognizer:gestureRecognizer];
+	}];
 }
 
 // 展示开屏广告
