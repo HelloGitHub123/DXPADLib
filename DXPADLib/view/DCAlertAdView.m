@@ -48,7 +48,7 @@
 		// make.size.mas_equalTo(CGSizeMake(SCREEN_WIDTH - 84, 248));
     }];
     [self.closeBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.alertImgView.mas_bottom).offset(10);
+        make.top.equalTo(self.alertImgView.mas_bottom).offset(24);
         make.centerX.mas_equalTo(self);
         make.size.mas_equalTo(CGSizeMake(24, 24));
     }];
@@ -58,9 +58,11 @@
     DCAdPic *adPic = [self.adDetail.adPicList firstObject];
 	[self.alertImgView sd_setImageWithURL:[NSURL URLWithString:adPic.adImg] placeholderImage:[UIImage imageNamed:@""] completed:^(UIImage * _Nullable image, NSError * _Nullable error, SDImageCacheType cacheType, NSURL * _Nullable imageURL) {
 		CGSize imgSize = image.size;
-		[self.alertImgView mas_updateConstraints:^(MASConstraintMaker *make) {
-			make.size.mas_equalTo(CGSizeMake(SCREEN_WIDTH_ad - 84, (SCREEN_WIDTH_ad - 84) / imgSize.width * imgSize.height));
-		}];
+		if (image) {
+			[self.alertImgView mas_updateConstraints:^(MASConstraintMaker *make) {
+				make.size.mas_equalTo(CGSizeMake(SCREEN_WIDTH_ad - 84, (SCREEN_WIDTH_ad - 84) / imgSize.width * imgSize.height));
+			}];
+		}
 	}];
 	
 }
