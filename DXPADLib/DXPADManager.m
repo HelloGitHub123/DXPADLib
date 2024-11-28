@@ -134,6 +134,9 @@ static DXPADManager *manager = nil;
 			} else {
 				// 移除开屏广告
 				[weakSelf.splashAdView removeFromSuperview];
+				if (self.onAdsFinish) {
+					self.onAdsFinish();
+				}
 			}
 		}
 	}];
