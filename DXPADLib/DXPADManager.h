@@ -49,6 +49,12 @@ NS_ASSUME_NONNULL_BEGIN
 //- (void)showAdWith:(UIViewController*)vc;
 - (void)showAdWith:(NSString *)pageUrl;
 
+// 设置路由字典
+- (void)setAdPageUrlObj:(NSDictionary*)dic;
+
+// set router config  {route:VC}
+- (void)setRouteConfig:(NSDictionary *)configDic;
+
 // 清除
 - (void)clearAd;
 

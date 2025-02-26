@@ -251,8 +251,9 @@ static DXPADManager *manager = nil;
 	
 	// 悬浮广告
 	[self.floatingAdArr enumerateObjectsUsingBlock:^(DCAdDetail *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSString * clasName = [self.adPageUrlDic objectForKey:obj.clsName];
 		if (!isEmptyString_ad(obj.clsName)
-			&& [pageUrl isEqualToString:obj.clsName]
+			&& [pageUrl isEqualToString:clasName]
 			&& canShow(obj)
 			&& ![self checkADViewShowed:[self topViewController] andTag:HJFloatViewTag]
 			&& !IsArrEmpty_ad(obj.adPicList) ) {
@@ -301,8 +302,9 @@ static DXPADManager *manager = nil;
 	
 	// 弹窗广告
 	[self.alertAdArr enumerateObjectsUsingBlock:^(DCAdDetail *obj, NSUInteger idx, BOOL * _Nonnull stop) {
-		if (!isEmptyString_ad(obj.clsName)
-			&& [pageUrl isEqualToString:obj.clsName]
+        NSString * clasName = [self.adPageUrlDic objectForKey:obj.clsName];
+        if (!isEmptyString_ad(obj.clsName)
+			&& [pageUrl isEqualToString:clasName]
 			&& canShow(obj)
 			&& ![self checkADViewShowed:[self topViewController] andTag:HJAlertADTag]
 			&& !IsArrEmpty_ad(obj.adPicList) ) {
@@ -564,12 +566,22 @@ static DXPADManager *manager = nil;
 	
 }
 
-// MARK: LAZY
 - (NSMutableArray<DCAdDetail *> *)mktAdList {
 	if (!_mktAdList) {
 		_mktAdList = [NSMutableArray new];
 	}
 	return _mktAdList;
+}
+
+- (void)setRouteConfig:(NSDictionary *)configDic {
+    self.adPageUrlDic = configDic;
+    NSLog(@"----- %@",self.adPageUrlDic);
+}
+
+- (void)setAdPageUrlObj:(NSDictionary*)dic {
+    if(dic) {
+        self.adPageUrlDic = dic;
+    }
 }
 
 - (DCSplashAdView *)splashAdView {
