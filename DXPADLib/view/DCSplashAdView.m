@@ -30,7 +30,7 @@
 }
 
 - (void)configView {
-    self.backgroundColor = [UIColor whiteColor];
+	self.backgroundColor = [UIColor clearColor];
     [self addSubview:self.screenImg];
     [self.screenImg mas_makeConstraints:^(MASConstraintMaker *make) {
         make.leading.trailing.equalTo(@0);
