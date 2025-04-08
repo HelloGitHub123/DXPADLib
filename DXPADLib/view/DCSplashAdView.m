@@ -36,7 +36,7 @@
         make.leading.trailing.equalTo(@0);
 //        make.top.equalTo(@(kDCADSafeTop));
         make.top.equalTo(@0);
-        make.bottom.equalTo(@(-kDCADSafeBottom_ad));
+        make.bottom.equalTo(@0);
     }];
     
     [self addSubview:self.adImgView];
