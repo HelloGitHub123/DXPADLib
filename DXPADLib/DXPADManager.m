@@ -117,6 +117,9 @@ static DXPADManager *manager = nil;
 // 入口
 - (void)startConfig {
 	// 展示splash view
+    
+    NSString *idsImg = [[NSUserDefaults standardUserDefaults] objectForKey:@"app_startup_page"]; // 缓存的启动图
+    
 	__weak __typeof(&*self)weakSelf = self;
 	self.splashAdView.layer.zPosition = MAXFLOAT;
 	[[UIApplication sharedApplication].delegate.window addSubview:self.splashAdView];
@@ -126,7 +129,12 @@ static DXPADManager *manager = nil;
 			// 展示开屏广告
 			[self showSplashAd];
 		} else {
-			if (self.defaultLaunchImg) {
+            if (!isEmptyString_ad(idsImg)) {
+                [self.splashAdView.screenImg sd_setImageWithURL:[NSURL URLWithString:idsImg] placeholderImage:[UIImage imageNamed:@"ic_launch_bg"]];
+                [self.splashAdView showSplashAD:nil adpic:nil];
+
+                [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(removeLun) userInfo:nil repeats:NO];
+            } else if (self.defaultLaunchImg) {
 				self.splashAdView.screenImg.image = self.defaultLaunchImg;
 				[self.splashAdView showSplashAD:nil adpic:nil];
 				// 2秒后移除
